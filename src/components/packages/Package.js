@@ -152,10 +152,10 @@ class Package extends Component {
         label += pricingData.currencySymbols[pricingData.selectedCurrency];
         label += Helper.formatNumber(price, locale);
 
-        if (BillingCycleString.MONTHLY === pricingData.selectedBillingCycle)
+        if (BillingCycleString.ANNUAL === pricingData.selectedBillingCycle)
+            label += ' / year';        
+        else if (BillingCycleString.MONTHLY === pricingData.selectedBillingCycle)
             label += ' / mo';
-        else if (BillingCycleString.ANNUAL === pricingData.selectedBillingCycle)
-            label += ' / year';
 
         return label;
     }
@@ -211,7 +211,12 @@ class Package extends Component {
 
             selectedPricingAmount = ((BillingCycleString.ANNUAL === this.context.selectedBillingCycle) ?
                 // The 'en-US' is intentionally hard-coded here because we are spliting the decimal by '.'.
-                Helper.formatNumber(selectedPricing.getMonthlyAmount(BillingCycle.ANNUAL), 'en-US') :
+                /**
+                 * @author @mizandev
+                 * replaced getMonthluAmount by copy and customization
+                 * @lastModified: 7/20/2021
+                 */
+                Helper.formatNumber(selectedPricing.getAnnualAmount(BillingCycle.ANNUAL), 'en-US') :
                 selectedPricing[`${this.context.selectedBillingCycle}_price`]).toString();
         }
 
@@ -286,7 +291,12 @@ class Package extends Component {
                         {
                             ! planPackage.is_free_plan &&
                             BillingCycleString.LIFETIME !== this.context.selectedBillingCycle &&
-                            <sub className="fs-selected-pricing-amount-cycle">/ mo</sub>
+                            /**
+                             * @author @mizandev
+                             * @changed: 'from / mo' to '/ year'
+                             * @lastModified: 7/10/2021
+                             */                            
+                            <sub className="fs-selected-pricing-amount-cycle">/ year</sub>
                         }
                     </span>
                 </div>
